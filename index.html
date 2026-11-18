@@ -276,7 +276,7 @@
         <div class="widget-details">
           <div class="widget-title">Your Server</div>
           <div class="widget-sub"><span class="status-dot"></span>1,240 Online • 8,500 Members</div>
-          <a href="https://discord.gg/yourinvite" target="_blank" class="join-btn">Join</a>
+          <a href="https://discord.gg/NzDWCBreW" target="_blank" class="join-btn">Join</a>
         </div>
       </div>
     </div>
@@ -308,17 +308,17 @@
     });
 
     // 2. Live Discord Presence via Lanyard (Join discord.gg/lanyard with your Discord account for this to work)
-    const DISCORD_USER_ID = "YOUR_DISCORD_USER_ID";
+    const DISCORD_USER_ID = "1561365126727073812";
 
     async function fetchDiscordPresence() {
-      if (DISCORD_USER_ID === "YOUR_DISCORD_USER_ID") return;
+      if (DISCORD_USER_ID === "1561365126727073812") return;
       try {
         const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
         const { data } = await res.json();
         if (!data) return;
 
         const user = data.discord_user;
-        document.getElementById("discordName").textContent = user.global_name || user.username;
+        document.getElementById("vqwz").textContent = user.global_name || user.username;
         if (user.avatar) {
           document.getElementById("discordAvatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
         }
