@@ -1,1 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YourName — Bio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
+    body {
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0d0d0d;
+      color: #fff;
+    }
+
+    /* Fullscreen Background Video / Image */
+    .bg-video {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+      filter: brightness(0.75);
+    }
+
+    /* Snow Particle Canvas */
+    #snow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Mute/Unmute Audio Button (Top Left) */
+    .audio-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+    .audio-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Main Glassmorphism Card */
+    .card {
+      width: 92%;
+      max-width: 580px;
+      background: rgba(20, 20, 20, 0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 22px;
+      padding: 28px 30px 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Header: Avatar + Name + Bio */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .avatar {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .profile-info h1 {
+      font-size: 26px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .bio {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.88);
+      margin-top: 4px;
+    }
+
+    .joined {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-top: 4px;
+    }
+
+    /* Two-Column Widget Row */
+    .widgets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .widget-box {
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .widget-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .widget-icon.round {
+      border-radius: 50%;
+    }
+
+    .widget-details {
+      overflow: hidden;
+    }
+
+    .widget-title {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .widget-sub {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #23a55a;
+      margin-right: 4px;
+    }
+
+    .join-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #248046;
+      color: #fff;
+      text-decoration: none;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 3px 12px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    .join-btn:hover {
+      background: #1a6334;
+    }
+
+    /* Social Links */
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+
+    .socials a {
+      color: #fff;
+      font-size: 26px;
+      transition: transform 0.2s, opacity 0.2s;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+    }
+
+    .socials a:hover {
+      transform: translateY(-3px) scale(1.08);
+      opacity: 0.85;
+    }
+
+    /* View Counter (Bottom Left) */
+    .views {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    @media (max-width: 540px) {
+      .widgets {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video (Replace src with your .mp4 file) -->
+  <video id="bgVideo" class="bg-video" autoplay loop muted playsinline>
+    <source src="bg.mp4" type="video/mp4" />
+  </video>
+
+  <!-- Snow Particles -->
+  <canvas id="snow"></canvas>
+
+  <!-- Audio Toggle -->
+  <button class="audio-btn" id="audioToggle" title="Toggle Sound">
+    <i class="fa-solid fa-volume-xmark" id="audioIcon"></i>
+  </button>
+
+  <!-- Profile Card -->
+  <div class="card">
+    <div class="profile-header">
+      <img src="https://github.com/github.png" alt="Avatar" class="avatar" id="avatarImg" />
+      <div class="profile-info">
+        <h1>YourName <span class="badge">⚡</span></h1>
+        <p class="bio">Developer, modder, and creator.</p>
+        <p class="joined">Joined over 1 year ago</p>
+      </div>
+    </div>
+
+    <div class="widgets">
+      <!-- Left Widget: Live Discord Status (Powered by Lanyard API) -->
+      <div class="widget-box">
+        <img src="https://github.com/github.png" alt="Discord Avatar" class="widget-icon round" id="discordAvatar" />
+        <div class="widget-details">
+          <div class="widget-title" id="discordName">YourName</div>
+          <div class="widget-sub" id="discordStatus">Offline</div>
+          <div class="widget-sub" id="discordActivity"></div>
+        </div>
+      </div>
+
+      <!-- Right Widget: Discord Server Invite -->
+      <div class="widget-box">
+        <img src="https://github.com/github.png" alt="Server Icon" class="widget-icon" />
+        <div class="widget-details">
+          <div class="widget-title">Your Server</div>
+          <div class="widget-sub"><span class="status-dot"></span>1,240 Online • 8,500 Members</div>
+          <a href="https://discord.gg/yourinvite" target="_blank" class="join-btn">Join</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Icons -->
+    <div class="socials">
+      <a href="https://github.com/yourusername" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+      <a href="https://instagram.com/yourusername" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://tiktok.com/@yourusername" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://x.com/yourusername" target="_blank" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+    </div>
+
+    <!-- View Counter -->
+    <div class="views">
+      <i class="fa-solid fa-eye"></i>
+      <span id="viewCount">6,184</span>
+    </div>
+  </div>
+
+  <script>
+    // 1. Audio Toggle for Background Video
+    const video = document.getElementById("bgVideo");
+    const audioBtn = document.getElementById("audioToggle");
+    const audioIcon = document.getElementById("audioIcon");
+
+    audioBtn.addEventListener("click", () => {
+      video.muted = !video.muted;
+      audioIcon.className = video.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
+    });
+
+    // 2. Live Discord Presence via Lanyard (Join discord.gg/lanyard with your Discord account for this to work)
+    const DISCORD_USER_ID = "YOUR_DISCORD_USER_ID";
+
+    async function fetchDiscordPresence() {
+      if (DISCORD_USER_ID === "YOUR_DISCORD_USER_ID") return;
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+        const { data } = await res.json();
+        if (!data) return;
+
+        const user = data.discord_user;
+        document.getElementById("discordName").textContent = user.global_name || user.username;
+        if (user.avatar) {
+          document.getElementById("discordAvatar").src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
+        }
+
+        const activity = data.activities.find(a => a.type === 0); // Playing a game
+        if (activity) {
+          document.getElementById("discordStatus").textContent = activity.name;
+          document.getElementById("discordActivity").textContent = activity.details || activity.state || "";
+        } else {
+          document.getElementById("discordStatus").textContent = `Status: ${data.discord_status}`;
+        }
+      } catch (e) {
+        console.error("Lanyard fetch failed:", e);
+      }
+    }
+    fetchDiscordPresence();
+
+    // 3. Subtle Snow Particles
+    const canvas = document.getElementById("snow");
+    const ctx = canvas.getContext("2d");
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener("resize", () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const flakes = Array.from({ length: 65 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 2 + 0.8,
+      speed: Math.random() * 0.7 + 0.2
+    }));
+
+    function drawSnow() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.beginPath();
+      for (const f of flakes) {
+        ctx.moveTo(f.x, f.y);
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        f.y += f.speed;
+        if (f.y > height) {
+          f.y = -5;
+          f.x = Math.random() * width;
+        }
+      }
+      ctx.fill();
+      requestAnimationFrame(drawSnow);
+    }
+    drawSnow();
+  </script>
+</body>
+</html>
